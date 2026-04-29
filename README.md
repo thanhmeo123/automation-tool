@@ -1,8 +1,14 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app), with basic Supabase Auth integration.
 
 ## Getting Started
 
-First, run the development server:
+1) Copy env template and fill your Supabase values:
+
+```bash
+cp .env.example .env.local
+```
+
+2) Run the development server:
 
 ```bash
 npm run dev
@@ -16,9 +22,25 @@ bun dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Supabase auth pages
+
+- `/auth/login`: sign in with email/password
+- `/auth/sign-up`: create account
+- `/`: session check + sign out
+- `/queue`: basic content queue CRUD
+
+## Database schema
+
+- `database/migrations/20260429_init_supabase_schema.sql`
+
+Run this SQL in Supabase before testing `/queue`.
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Required environment variables
+
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
 
 ## Learn More
 
