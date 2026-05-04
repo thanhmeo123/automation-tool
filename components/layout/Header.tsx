@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
-
 export function Header() {
   return (
-    <header className="h-16 flex-shrink-0 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-6">
+    <header className="h-16 shrink-0 bg-white dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between px-6">
       <div className="flex md:hidden">
         {/* Mobile menu toggle would go here */}
         <span className="text-xl font-bold tracking-tight text-zinc-950 dark:text-zinc-50">
