@@ -1,30 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
-export function LoginPage() {
-  const [error, setError] = useState<string | null>(null);
+export function SignUpPage({
+  error: initialError,
+  success,
+}: {
+  error?: string;
+  success?: string;
+}) {
+  const [error, setError] = useState<string | null>(initialError || null);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  useEffect(() => {
-    // Nếu đã có session thì đẩy về dashboard
-    const checkAuth = async () => {
-      const supabase = createClient();
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      if (session) {
-        router.push("/dashboard");
-      }
-    };
-    checkAuth();
-  }, [router]);
-
-  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSignUp(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setLoading(true);
     setError(null);
@@ -35,23 +27,21 @@ export function LoginPage() {
 
     try {
       const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
+      const { error } = await supabase.auth.signUp({
         email,
         password,
       });
 
       if (error) throw error;
 
-      if (data && data.session) {
-        localStorage.setItem("sb-auth-token", data.session.access_token);
-        router.push("/dashboard");
-        router.refresh();
-      } else {
-        throw new Error("Không nhận được session sau khi đăng nhập");
-      }
+      // Registration successful, usually requires email confirmation
+      // but if disabled, they can login. Let's just redirect to login
+      router.push(
+        "/auth/login?message=Check your email to confirm your account",
+      );
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đăng nhập",
+        err instanceof Error ? err.message : "Đã xảy ra lỗi khi đăng ký",
       );
     } finally {
       setLoading(false);
@@ -90,12 +80,17 @@ export function LoginPage() {
             AutoContent Studio
           </h1>
           <p className="text-base text-zinc-500 dark:text-zinc-400">
-            Sign in to your account
+            Create a new account
           </p>
         </header>
 
         {/* Form */}
-        <form className="w-full flex flex-col gap-6" onSubmit={handleLogin}>
+        <form className="w-full flex flex-col gap-6" onSubmit={handleSignUp}>
+          {success && !error && (
+            <div className="p-3 text-sm text-green-600 bg-green-50 dark:bg-green-950/50 dark:text-green-400 rounded-lg">
+              {success}
+            </div>
+          )}
           {error && (
             <div className="p-3 text-sm text-red-600 bg-red-50 dark:bg-red-950/50 dark:text-red-400 rounded-lg">
               {error}
@@ -123,20 +118,12 @@ export function LoginPage() {
 
           {/* Password Input */}
           <div className="flex flex-col gap-2">
-            <div className="flex items-center justify-between">
-              <label
-                className="text-xs uppercase tracking-wider text-zinc-500 font-semibold"
-                htmlFor="password"
-              >
-                Password
-              </label>
-              <Link
-                href="#"
-                className="text-sm text-zinc-500 hover:text-zinc-950 dark:hover:text-zinc-50 transition-colors"
-              >
-                Forgot?
-              </Link>
-            </div>
+            <label
+              className="text-xs uppercase tracking-wider text-zinc-500 font-semibold"
+              htmlFor="password"
+            >
+              Password
+            </label>
             <input
               className="w-full bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-lg h-12 px-4 shadow-sm focus:outline-none focus:ring-2 focus:ring-zinc-900 dark:focus:ring-zinc-50 transition-all"
               id="password"
@@ -145,17 +132,17 @@ export function LoginPage() {
               placeholder="••••••••"
               required
               minLength={6}
-              autoComplete="current-password"
+              autoComplete="new-password"
             />
           </div>
 
-          {/* Login Button */}
+          {/* Sign Up Button */}
           <button
             className="w-full h-12 rounded-lg text-base font-medium mt-2 bg-zinc-950 text-white hover:bg-zinc-800 dark:bg-zinc-50 dark:text-zinc-900 dark:hover:bg-zinc-200 transition-colors disabled:opacity-50"
             type="submit"
             disabled={loading}
           >
-            {loading ? "Logging in..." : "Log in"}
+            {loading ? "Creating..." : "Create account"}
           </button>
         </form>
 
@@ -199,14 +186,14 @@ export function LoginPage() {
           Continue with Google
         </button>
 
-        {/* Sign Up Link */}
+        {/* Sign In Link */}
         <p className="mt-8 text-sm text-zinc-500 text-center">
-          Don&apos;t have an account?{" "}
+          Already have an account?{" "}
           <Link
-            href="/auth/sign-up"
+            href="/auth/login"
             className="text-zinc-950 dark:text-zinc-50 font-medium hover:underline transition-all"
           >
-            Sign up
+            Sign in
           </Link>
         </p>
       </section>

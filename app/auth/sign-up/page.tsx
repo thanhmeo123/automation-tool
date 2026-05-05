@@ -1,4 +1,4 @@
-import { SignUpPage } from "@/features/auth/sign-up";
+import { SignUpPage } from "@/features/auth";
 
 type SignUpPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
