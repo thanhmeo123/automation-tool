@@ -29,6 +29,15 @@ export function Sidebar() {
           Dashboard
         </Link>
         <Link
+          href="/studio"
+          className="px-4 py-2 rounded-md text-sm font-medium transition-colors text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900 flex items-center gap-2"
+        >
+          <span className="w-4 h-4 flex items-center justify-center text-indigo-500">
+            ✨
+          </span>
+          AI Studio
+        </Link>
+        <Link
           href="/queue"
           className="px-4 py-2 rounded-md text-sm font-medium transition-colors text-zinc-600 hover:text-zinc-950 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:text-zinc-50 dark:hover:bg-zinc-900"
         >
