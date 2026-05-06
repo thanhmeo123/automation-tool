@@ -1,24 +1,13 @@
 import { redirect } from "next/navigation";
-import { createClient } from "@/lib/supabase/server";
-import { QueuePage, type QueueItemType } from "@/features/queue";
+import { QueuePage } from "@/features/queue";
+import { getQueueItems } from "@/features/queue/api/queries";
 
 export default async function QueuePageRoute() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const { data, error } = await getQueueItems();
 
-  if (!user) {
+  if (error === "Unauthorized") {
     redirect("/auth/login");
   }
 
-  const { data, error } = await supabase
-    .from("content_queue")
-    .select("id, content, platform, status, scheduled_at, created_at")
-    .order("created_at", { ascending: false })
-    .limit(20);
-
-  return (
-    <QueuePage data={data as QueueItemType[] | null} error={error?.message} />
-  );
+  return <QueuePage data={data} error={error} />;
 }

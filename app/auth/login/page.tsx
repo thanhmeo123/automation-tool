@@ -1,4 +1,4 @@
-import { LoginPage } from "@/features/auth/login";
+import { LoginPage } from "@/features/auth";
 
 export default async function LoginPageRoute(props: {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
